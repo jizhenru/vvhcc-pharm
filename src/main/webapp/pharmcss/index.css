@@ -1,0 +1,72 @@
+/*   header   */
+#logo_img{
+	width: 230px; 
+	height: 60px;
+
+}
+
+#login_div{
+	padding-top:30px;
+
+}	
+
+#login_div a{
+	font-size: 20px;
+}		
+
+/*   导航条     */
+#nav {
+	background-color: #0080A5;
+	width:82%;
+	margin-top:10px;
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+#nav_div{
+	padding-left:100px;
+}
+
+
+#nav_div a{
+	color: #ffffff;
+	font-size: 20px;
+}
+
+/* 登陆模态框   */
+.modal-title{
+	color: #58C6FB;
+}
+
+.iframe
+{
+	width:80%;
+	padding-left:50px;
+	margin-left: auto; 
+	margin-right: auto;
+	height:200px;
+}
+
+.modal-dialog {
+
+	width:400px;
+	position: absolute;
+	top: 20%;
+	left:40%;
+}
+
+/*  轮播图    */ 
+.carousel-inner img{
+	width: 1330px;
+	height: 450px;
+	margin-left: auto; 
+	margin-right: auto;
+
+}
+
+/*  footer  */ 
+#footer_attention img{
+	padding:10px 10px 0px 0px;
+	
+
+}

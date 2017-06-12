@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vvcs.pharm.dao.GenericMapper">
+	<resultMap type="com.vvcs.pharm.pojo.Generic" id="genericMap"
+		autoMapping="true">
+	</resultMap>
+	<select id="findGeneric" resultMap="genericMap">
+		SELECT
+		*
+		FROM
+		vvcs_Generic as g
+		WHERE
+		id = #{0};
+	</select>
+	<select id="selectGeneric" resultType="com.vvcs.pharm.pojo.Generic">
+	select * from  vvcs_Generic
+	</select>
+	<delete id="deleteGeneric" parameterType="com.vvcs.pharm.pojo.Generic">
+	delete from vvcs_Generic where id=#{id};
+	</delete>
+  <insert id="addGeneric" parameterType="com.vvcs.pharm.pojo.Generic" keyProperty="id" useGeneratedKeys="true" >
+   insert into vvcs_Generic (GenericName,manufacture,Approvalnum) values(#{genericName},#{manufacture},#{approvalNum})
+  </insert>
+  <update id="updateGeneric" parameterType="com.vvcs.pharm.pojo.Generic">
+   update vvcs_Generic set GenericName=#{genericName},manufacture=#{manufacture},Approvalnum=#{approvalNum}  where id=#{id}
+  </update>
+
+</mapper>

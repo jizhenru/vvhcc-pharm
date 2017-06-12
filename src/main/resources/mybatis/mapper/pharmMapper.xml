@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vvcs.pharm.dao.PrescriptionMapper">
+
+	<!-- 查询用户时将角色列表一起查询出来 -->
+	<resultMap type="com.vvcs.pharm.pojo.Prescription" id="prescriptionMap"
+		autoMapping="true">
+		<id column="id" property="id"/>
+		<collection select="findGenericNum" property="prescriptionDetails"
+			column="id" ofType="com.vvcs.pharm.pojo.PrescriptionDetails"
+			autoMapping="true">
+		</collection>
+	</resultMap>
+	<!-- 分页查询处方 -->
+	<select id="findPrescriptionByPage" resultMap="prescriptionMap">
+		SELECT
+		*
+		FROM
+		vvcs_PrescriptionInfo
+		LIMIT #{0},
+		#{1};
+	</select>
+ 
+ 	<!-- 查询处方列表 -->
+	<select id="findPrescriptionPageByOutstatus" resultMap="prescriptionMap">
+		<!-- SELECT * FROM vvcs_PrescriptionInfo AS PI LEFT JOIN vvcs_PrescriptionDetails 
+			AS PD ON PI.id = PD.PrescriptionInfo_id WHERE PI.OutStatus = #{0}; -->
+      SELECT
+		*
+		FROM
+		vvcs_PrescriptionInfo AS PI
+		WHERE
+	 	PI.OutStatus =#{2} 
+		LIMIT #{0},
+		#{1};
+	</select>
+
+	<select id="findPrescriptionNum" resultType="java.lang.Integer">
+		SELECT
+		COUNT(id)
+		FROM
+		vvcs_PrescriptionInfo;
+	</select>
+	<select id="findPrescriptionOutStatusNum" resultType="java.lang.Integer">
+		SELECT
+		COUNT(id)
+		FROM
+		vvcs_PrescriptionInfo where OutStatus = 0;
+	</select>
+	<!-- 根據時間查詢未出藥處方數量 -->
+	<select id="findPrescriptionNumByTimeByOutStatus" resultType="java.lang.Integer">
+		SELECT
+		COUNT(id)
+		FROM
+		vvcs_PrescriptionInfo 
+		where 
+		OutTime BETWEEN #{0} and #{1} 
+		and OutStatus = #{2};
+	</select>
+	<!-- 根據時間查詢處方數量 -->
+	<select id="findPrescriptionNumByTime" resultType="java.lang.Integer">
+		SELECT
+		COUNT(id)
+		FROM
+		vvcs_PrescriptionInfo 
+		where 
+		PrescriptionCreateDate BETWEEN #{0} and #{1};
+	</select>
+
+	<select id="findGenericNum" resultType="com.vvcs.pharm.pojo.PrescriptionDetails">
+		select * from
+		vvcs_PrescriptionDetails where PrescriptionInfo_id = #{id}
+	</select>
+	<!--根据日期查询未出药状态的處方-->
+   <select id="findPrescriptionTimeByOutStatus" resultMap="prescriptionMap">
+ 		select *  from vvcs_PrescriptionInfo where OutTime BETWEEN #{outTime} and #{outTime1} and OutStatus=#{outStatus} order by OutTime LIMIT #{offset},#{limit};
+   </select> 
+   <!--根据日期查询處方-->
+   <select id="findPrescriptionTime" resultMap="prescriptionMap">
+ 		select *  from vvcs_PrescriptionInfo where PrescriptionCreateDate BETWEEN #{0} and #{1} order by PrescriptionCreateDate LIMIT #{2},#{3};
+   </select> 
+	<!--修改出药状态 -->
+	<update id="updatePrescription" parameterType="com.vvcs.pharm.pojo.Prescription">
+		update vvcs_PrescriptionInfo set OutStatus=#{outStatus},OutTime=NOW() where
+		id=#{id};
+	</update>
+	<!--根据用户id查询历史处方  -->
+	<select id="findPrescriptionUser" resultMap="prescriptionMap">
+    select * from vvcs_PrescriptionInfo where PatientID=#{patientID} and OutStatus=#{outStatus};
+	</select>
+	 
+
+	  <!--修改预约药房-->
+	  <update id="updatePrescriptionAppoint" parameterType="com.vvcs.pharm.pojo.Prescription">
+	  update  vvcs_PrescriptionInfo set AppointID=#{appointID} where id=#{id}
+	  </update>
+	  <!--根据处方id查询-->
+	 <select id="findPrescriptionId" resultMap="prescriptionMap">
+	 select * from vvcs_PrescriptionInfo where id=#{id};
+    </select>
+ <select id="selectPrescrptionInfo" resultMap="prescriptionMap">
+ select * from vvcs_PrescriptionInfo
+ </select>
+        
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vvcs.pharm.dao.PharmacyMapper">
+	<resultMap type="com.vvcs.pharm.pojo.Pharmacy" id="PharmacyMap" autoMapping="true">
+	</resultMap>
+  <select id="findPharmacy" resultMap="PharmacyMap">
+  select * from vvcs_pharmacy where id=#{id};
+  </select>
+  <select id="findPharmacy1" resultMap="PharmacyMap">
+  select * from vvcs_pharmacy 
+  </select>
+  
+    <select id="findPharmacy2" resultMap="PharmacyMap">
+  select * from vvcs_pharmacy 
+  </select>
+
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+	
+	<!-- 定义事务管理器一 -->
+	<bean id="TX01"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource01" />
+	</bean>
+
+	<!-- 定义事务策略 -->
+	<tx:advice id="txAdvice01" transaction-manager="TX01">
+		<tx:attributes>
+			<!--所有以query开头的方法都是只读的 -->
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="select*" read-only="true" />
+			<!--其他方法使用默认事务策略 -->
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 定义事务管理器二 -->
+	<bean id="TX02"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource02" />
+	</bean>
+
+	<!-- 定义事务策略 -->
+	<tx:advice id="txAdvice02" transaction-manager="TX02">
+		<tx:attributes>
+			<!--所有以query开头的方法都是只读的 -->
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="select*" read-only="true" />
+			<!--其他方法使用默认事务策略 -->
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 定义事务管理器三 -->
+	<bean id="TX03"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource03" />
+	</bean>
+
+	<!-- 定义事务策略 -->
+	<tx:advice id="txAdvice03" transaction-manager="TX03">
+		<tx:attributes>
+			<!--所有以query开头的方法都是只读的 -->
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="select*" read-only="true" />
+			<!--其他方法使用默认事务策略 -->
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 定义事务管理器四 -->
+	<bean id="TX04"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource03" />
+	</bean>
+
+	<!-- 定义事务策略 -->
+	<tx:advice id="txAdvice04" transaction-manager="TX04">
+		<tx:attributes>
+			<!--所有以query开头的方法都是只读的 -->
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="select*" read-only="true" />
+			<!--其他方法使用默认事务策略 -->
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	<!--使用注释事务 -->  
+<tx:annotation-driven  transaction-manager="transactionManager" />
+	<!-- <aop:config>
+		pointcut元素定义一个切入点，execution中的第一个星号 用以匹配方法的返回类型，
+			这里星号表明匹配所有返回类型。 com.vvcs.sso.service.*.*(..)表明匹配com.vvcs.sso.service包下的所有类的所有 
+			方法
+		<aop:pointcut id="myPointcut" expression="execution(* com.vvcs.pharm.service.*.*(..))" />
+		将定义好的事务处理策略应用到上述的切入点
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut" />
+	</aop:config> -->
+	
+</beans>

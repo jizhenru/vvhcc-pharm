@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.vvcs.pharm.dao.DeviceMapper">
+ <insert id="addDervice"   parameterType="com.vvcs.pharm.pojo.Device"  keyProperty="id" useGeneratedKeys="true"  >
+  insert into  vvcs_device (name,deviceid,type,pharmacyid,IPADDR,status) values(#{name},#{deviceid},#{type},#{pharmacyid},#{IPADDR},#{status})
+</insert>
+<!--根据药房id查询所有设备名  -->
+<select id="findDevice" resultType="com.vvcs.pharm.pojo.Device">
+select * from vvcs_device  where pharmacyid=#{pharmacyid}
+</select>
+<!--  根据id查询设备药筒id-->
+<select id="finDeviceId" resultType="com.vvcs.pharm.pojo.Device">
+select * from vvcs_device  where id=#{id};
+</select> 
+<!-- 根据设备药筒id查询设备的基本信息 -->
+<select id="finDevicedeviceid" resultType="com.vvcs.pharm.pojo.Device">
+select * from vvcs_device where deviceid=#{deviceid};
+</select>
+<!--删除设备基本信息-->
+<delete id="findevicedelete" parameterType="com.vvcs.pharm.pojo.Device">
+delete from vvcs_device where id=#{id}
+</delete>
+<!--修改设备基本信息-->
+<update id="findeviceupdate" parameterType="com.vvcs.pharm.pojo.Device">
+update vvcs_device set  name=#{name}, deviceid=#{deviceid}, type=#{type},pharmacyid=#{pharmacyid},IPADDR=#{IPADDR}, status=#{status} where id=#{id}
+</update>
+<!--修改设备的状态进行开机关机-->
+<update id="findeviceupdatestatus" parameterType="com.vvcs.pharm.pojo.Device">
+update vvcs_device set status=#{status} where id=#{id}
+</update>
+<!-- 编辑设备基本信息 -->
+<update id="findevicenameipaddr" parameterType="com.vvcs.pharm.pojo.Device">
+update  vvcs_device set name=#{name},IPADDR=#{IPADDR} where id=#{id}
+</update>
+<!--查询设备deviceid是否重复  -->
+ <select id="findedeviceidID" resultType="com.vvcs.pharm.pojo.Device">
+select * from vvcs_device  where  deviceid=#{deviceid}
+</select>
+<!--查询所有设备-->
+<select id="selectdevice" resultType="com.vvcs.pharm.pojo.Device">
+select * from vvcs_device
+</select>
+
+</mapper> 
+
+

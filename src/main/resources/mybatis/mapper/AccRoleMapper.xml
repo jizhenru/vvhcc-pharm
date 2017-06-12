@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vvcs.pharm.dao.AccRoleMapper">
+ <insert id="addAccountRole" parameterType="com.vvcs.pharm.pojo.AccRole">
+ insert into vvcs_account_role (user_id,role_id) values(#{userId},#{roleId})
+ </insert>
+ <select id="selectuserid" resultType="com.vvcs.pharm.pojo.AccRole">
+ select * from vvcs_account_role where user_id=#{userId}
+ </select>
+  <delete id="finaccountroledel" parameterType="com.vvcs.pharm.pojo.AccRole">
+ delete from vvcs_account_role where user_id=#{userId}
+ </delete>
+</mapper>
+
+

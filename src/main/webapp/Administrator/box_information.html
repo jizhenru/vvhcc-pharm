@@ -1,0 +1,77 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>设备</title>
+	  <script src="../pharmjs/jquery-1.11.1.min.js"></script>
+	<script src="../pharmjs/bootstrap.min.js"></script>
+	<link href="../pharmcss/bootstrap.min.css" rel="stylesheet" />
+	<script src="../pharmjs/bootstrap-table.js"></script>
+    <link href="../pharmcss/bootstrap-table.css" rel="stylesheet" />
+    <script src="../pharmjs/bootstrap-table-zh-CN.js"></script>
+    <script src="../pharmjs/bootbox.min.js"></script>
+    <script src="../pharmjs/Administrator/machine_table.js"></script>
+	
+	<style>
+		.container{
+		margin-left:auto;
+		margin-right:auto;
+		margin-top:30px;
+		}
+		
+		
+		
+		
+	
+	</style>
+	
+	<script>
+
+   
+	</script>
+</head>
+<body>
+
+    <div class="container">
+<input id="deviceid" type="text" name="deviceid" value="${device}">
+      <div class="row" id="row_div">
+		
+			<ul class="nav nav-tabs " role="tablist" >
+			
+				<li class="active"><a href="#map_info" role="tab" data-toggle="tab">药筒(柜)信息</a></li>
+				<li><a href="#base_info" role="tab" data-toggle="tab">基本信息</a></li>
+			
+				
+			</ul>
+	
+			
+			<div class="tab-content">
+				<div class="tab-pane active" id="map_info">
+				
+					<div class="col-md-12" id="map_info_table">
+					
+					</div>	
+				
+				</div>
+			
+				<div class="tab-pane" id="base_info">
+					<input class="btn btn-success" type="button" value="开机">
+					<input class="btn btn-danger" type="button" value="关机">
+					<div class="col-md-12" id="base_info_table">
+					
+					</div>
+								
+				</div>				
+					
+			</div>
+
+		</div>
+	</div>
+
+
+</body>
+</html>

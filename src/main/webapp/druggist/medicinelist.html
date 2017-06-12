@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width" />
+<title>处方列表</title>
+<script src="../pharmjs/jquery-1.11.1.min.js"></script>
+
+<script src="../pharmjs/bootstrap.min.js"></script>
+<link href="../pharmcss/bootstrap.min.css" rel="stylesheet" />
+<script src="../pharmjs/bootstrap-table.js"></script>
+<link href="../pharmcss/bootstrap-table.css" rel="stylesheet" />
+<script src="../pharmjs/bootstrap-table-zh-CN.js"></script>
+<script src="../pharmjs/bootbox.min.js"></script>
+<script src="../pharmjs/druggist/medicinelist.js"></script>
+
+</head>
+<body>
+
+	<div class="container">
+		<div class="row" id="row_div">
+			<br>
+			<form method="post">
+				<input type="date" id="outTime" name="outTime"> <input
+					type="date" id="outTime1" name="outTime1"> <input
+					type="button" id="time_button" value="查询">
+			</form>
+			<br>
+			<ul class="nav nav-tabs " role="tablist">
+				<li class="active"><a href="#auto_out" role="tab"
+					data-toggle="tab">自动出药</a></li>
+				<li><a href="#hand_out" role="tab" data-toggle="tab">手动出药</a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="auto_out">
+					<div class="col-md-12" id="auto_out_table"></div>
+				</div>
+				<div class="tab-pane" id="hand_out">
+					<div class="col-md-12" id="hand_out_table"></div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

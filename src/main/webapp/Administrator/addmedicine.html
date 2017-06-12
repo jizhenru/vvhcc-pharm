@@ -1,0 +1,135 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<title>添加药品</title>
+
+<!-- Bootstrap -->
+<link rel="shortcut icon" href="../img/logo_ico.ico" />
+ <script src="../../pharmjs/jquery-1.11.1.min.js"></script>
+<link href="../pharmcss/bootstrap.min.css" rel="stylesheet">
+<script src="../pharmjs/jquery-1.11.1.min.js"></script>
+<script src="../pharmjs/bootstrap.min.js"></script>
+<link href="../pharmcss/bootstrap.min.css" rel="stylesheet" />
+<style>
+
+</style>
+
+<script type="text/javascript">
+ function ChekGenericName(){
+     if ($("#GenericName").val() == "") {
+         $("#GenericName").addClass("error");
+         $("#divGenericName").html("&nbsp;药品名称不能为空").css("color","red");
+         return false;
+     }
+     
+     //正确
+     $("#GenericName").removeClass("error");
+     $("#divGenericName").html("&nbsp;OK").css("color","green");
+     return true;
+	 
+ }
+ function Chekmanufacture(){
+     if ($("#manufacture").val() == "") {
+         $("#manufacture").addClass("error");
+         $("#divmanufacture").html("&nbsp;药品厂家不能为空").css("color","red");
+         return false;
+     }
+     
+     //正确
+     $("#manufacture").removeClass("error");
+     $("#divmanufacture").html("&nbsp;OK").css("color","green");
+     return true;
+	 
+ }
+ function ChekApprovalnum(){
+     if ($("#Approvalnum").val() == "") {
+         $("#Approvalnum").addClass("error");
+         $("#divApprovalnum").html("&nbsp;药品批次不能为空").css("color","red");
+         return false;
+     }
+     
+     //正确
+     $("#Approvalnum").removeClass("error");
+     $("#divApprovalnum").html("&nbsp;OK").css("color","green");
+     return true;
+	 
+ }
+ $(function(){
+	   $("#GenericName").blur(ChekGenericName);
+  	   $("#manufacture").blur(Chekmanufacture);
+  	   $("#Approvalnum").blur(ChekApprovalnum);
+  	   $("#regfrom").submit(function () {
+  		  	var b1 = ChekGenericName();	
+  		 	var b2 = Chekmanufacture();
+  			var b3 = ChekApprovalnum();
+  		  	return b1 && b2 && b3 ;
+
+  	     });
+   });
+ 
+</script>
+			
+
+
+</head>
+<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-10 col-md-offset-3">
+					<br>
+					<form id="regfrom" class="form-horizontal" action="../Administrator/addGeneric.do" method="post">
+					<div class="form-group">
+						<label for="input2" class="col-sm-2 control-label">药品名称</label>
+						<div class="col-sm-5">
+						  <input type="text" class="form-control" name="GenericName" id="GenericName" placeholder="请输入药品名称">
+						  <div id="divGenericName"></div>
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="input3" class="col-sm-2 control-label">药品厂家</label>
+						<div class="col-sm-5">
+						  <input type="text" class="form-control" name="manufacture" id="manufacture" placeholder="请输入药品厂家">
+					      <div id="divmanufacture"></div>
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="input3" class="col-sm-2 control-label">药品批次</label>
+						<div class="col-sm-5">
+						  <input type="text" class="form-control" name="Approvalnum" id="Approvalnum" placeholder="请输入药品批次">
+						  <div id="divApprovalnum"></div>
+						</div>
+					  </div>    
+					<!--<div class="form-group">
+						<label for="input1" class="col-sm-2 control-label">药品库存</label>
+						<div class="col-sm-5">
+							 <input type="text" class="form-control" id="inputnumber" placeholder="请输入药品库存">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="input3" class="col-sm-2 control-label">药品存放位置</label>
+						<div class="col-sm-5">
+						  <input type="text" class="form-control" id="inputtext3" placeholder="请输入药品存放位置">
+						</div>
+					  </div>
+					  <div class="form-group">
+						<label for="input4" class="col-sm-2 control-label">药品详情</label>
+						<div class="col-sm-5">
+						  <textarea class="form-control" rows="3"></textarea>
+					  </div>
+					  <br><br>
+					   -->
+					  <div class="form-group">
+						<div class="col-sm-offset-4 col-sm-5">
+						  <button type="submit" class="btn btn-default">添加</button>
+						</div>
+					  </div>
+					</form>
+				</div>
+
+</body>
+</html>

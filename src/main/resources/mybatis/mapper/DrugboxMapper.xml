@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vvcs.pharm.dao.DrugboxMapper">
+	<resultMap type="com.vvcs.pharm.pojo.Drugbox" id="drugboxMap"
+		autoMapping="true">
+	</resultMap>
+	<select id="queryDrugboxPageByDeviceId" resultMap="drugboxMap">
+		SELECT
+		*
+		FROM
+		vvcs_drugbox AS vd
+		WHERE
+		vd.device_id = #{2}
+		<if test="param4!=null">
+			AND 
+			drug LIKE #{param4}
+		</if>
+		ORDER BY drugnum ASC
+		LIMIT #{0},
+		#{1};
+	</select>
+	<select id="queryDrugboxNumByDeviceId" resultType="java.lang.Integer">
+		SELECT
+		COUNT(id)
+		FROM
+		`vvcs_drugbox`
+		WHERE
+		device_id = #{0};
+	</select>
+	
+	<select id="queryDrugboxNumByDeviceIdAndQuery" resultType="java.lang.Integer">
+		SELECT
+		COUNT(id)
+		FROM
+		`vvcs_drugbox`
+		WHERE 
+		<if test="param2!=null">
+			drug LIKE #{param2}
+			AND 
+		</if>
+		device_id = #{0};
+	</select>
+	
+	<update id="updateDrugboxById" parameterType="com.vvcs.pharm.pojo.Drugbox">
+ 		UPDATE vvcs_drugbox
+		SET drugnum = #{drugnum}
+		WHERE
+		id = #{id} 
+
+	</update>
+
+	<select id="findDrugboxById" resultMap="drugboxMap">
+		SELECT
+		*
+		FROM
+		vvcs_drugbox
+		WHERE
+		id = #{0}
+	</select>
+	<select id="findDrugboxById1" resultMap="drugboxMap">
+		SELECT
+		*
+		FROM
+		vvcs_drugbox
+		WHERE
+		device_id= #{deviceid}
+	</select>
+
+	<insert id="insertDrugbox" parameterType="com.vvcs.pharm.pojo.Drugbox">
+		INSERT INTO
+		vvcs_drugbox (
+		device_id,
+		coordinate_X,
+		coordinate_Y,
+		coordinate_Z,
+		drug,
+		id_in_device,
+		status,
+		drugnum)
+		VALUES
+		(#{deviceId}, #{coordinateX}, #{coordinateY}, #{coordinateZ}, #{drug},0,0,
+		#{drugnum});
+	</insert>
+		<select id="findDrugboxByDriveAndDrug" resultMap="drugboxMap">
+		SELECT
+			*
+		FROM
+			`vvcs_drugbox` AS vd
+		WHERE
+			vd.drug = #{generic}
+		AND vd.device_id = #{i}
+		AND vd.status=0
+		 ORDER BY vd.drugnum DESC;
+	</select>
+	<!--修改药筒工作状态-->
+ <update id="findrugboxupdate" parameterType="com.vvcs.pharm.pojo.Drugbox">
+  update vvcs_drugbox set status=#{status} where id=#{id};
+ </update>
+  <!--查询药品原有的数量 -->
+ 	<select id="findDrugboxdeviceid" resultType="com.vvcs.pharm.pojo.Drugbox">
+	select * from  vvcs_drugbox
+		where 
+		device_id=#{deviceId} and coordinate_X=#{coordinateX} and coordinate_Y=#{coordinateY}
+	</select>
+ <!--出药操作根据设备id和药筒位置对数量进行操作 -->
+ <update id="findrugboxupdateid"  parameterType="com.vvcs.pharm.pojo.Drugbox">
+ update   vvcs_drugbox set drugnum = #{drugnum}
+ where device_id=#{deviceId} and coordinate_X=#{coordinateX} and coordinate_Y=#{coordinateY}
+ </update>
+
+ <!-- 编辑修改药品名-->
+ <update id="findupdatedrug" parameterType="com.vvcs.pharm.pojo.Drugbox">
+   update  vvcs_drugbox set drug=#{drug}  where id=#{id} 
+ </update>
+ <!--删除药筒-->
+ <delete id="delvvcsdrugbox" parameterType="com.vvcs.pharm.pojo.Drugbox">
+  delete from vvcs_drugbox where id=#{id}
+ </delete>
+ <!-- 增加药筒信息 -->
+ <insert id="Addvvcsdrugbox" parameterType="com.vvcs.pharm.pojo.Drugbox"  keyProperty="id" useGeneratedKeys="true" >
+ insert into vvcs_drugbox (device_id,id_in_device,coordinate_X,coordinate_Y,coordinate_Z,drugnum,drug,status) values(#{deviceId},#{idInDevice},#{coordinateX},#{coordinateY},#{coordinateZ},#{drugnum},#{drug},#{status})
+ </insert>
+ <!-- <select id="findDrugboxByDriveId" resultMap="drugboxMap">
+		SELECT
+			*
+		FROM
+			`vvcs_drugbox` AS vd
+		WHERE
+		vd.device_id = #{0}
+		AND vd.status = 0;
+	</select> -->
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vvcs.pharm.dao.AccountMapper">
+ <insert id="addAccount" parameterType="com.vvcs.pharm.pojo.Account">
+ insert into vvcs_account (pid,loginname,password,name,sex,telephone,remark) values(#{pid},#{loginname},#{password},#{name},#{sex},#{telephone},#{remark})
+ </insert>
+  <select id="selectAccountusername" resultType="com.vvcs.pharm.pojo.Account">
+select * from vvcs_account where loginname=#{username}
+ </select>
+   <!--根据pid查询用户信息-->
+ <select id="selectAccountpid" resultType="com.vvcs.pharm.pojo.Account">
+  select * from vvcs_account where pid=#{pid}
+ </select>
+   <!--删除用户信息-->
+ <delete id="finaccountdel" parameterType="com.vvcs.pharm.pojo.Account">
+ delete from vvcs_account where id=#{id}
+ </delete>
+  <!--编辑用户信息-->
+ <update id="updateaccount" parameterType="com.vvcs.pharm.pojo.Account">
+ update  vvcs_account set name=#{name},sex=#{sex},telephone=#{telephone},remark=#{remark} where id=#{id}
+ </update>
+ <!--根据id来查询用户-->
+ <select id="findselectid" resultType="com.vvcs.pharm.pojo.Account">
+ select * from vvcs_account where id=#{id}
+ </select>
+
+</mapper>
+
