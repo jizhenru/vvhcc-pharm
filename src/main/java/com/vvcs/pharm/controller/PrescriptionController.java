@@ -205,29 +205,30 @@ public class PrescriptionController {
 			json.put("ColumnNumber", ColumnNumber);
 			json.put("RowNumber", RowNumber);
 			String MQ_drugbox = json.toString();
-			System.out.println(MQ_drugbox); 
-  /*		Interface_mq interfacemq = new Interface_mq();
+			System.out.println(MQ_drugbox);  
+  		Interface_mq interfacemq = new Interface_mq();
 			String sendMessage = interfacemq.SendMessage("rpc_queue", MQ_drugbox);
-			System.out.println(sendMessage);*/
+			System.out.println(sendMessage);
            //更新药桶药品数量
-			for (Drugbox drugbox : drudboxlist) {
-				Integer i = drugboxService.updateDrugboxById1(drugbox);
-				System.out.println(i);  
-          	} 
+//			for (Drugbox drugbox : drudboxlist) {
+//				Integer i = drugboxService.updateDrugboxById1(drugbox);
+//				System.out.println(i);  
+//          	} 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	
 	 /************************药桶更新完成******************************/
-       int count=0;
-    	Prescription prescription1 = new Prescription();
-		prescription1.setOutStatus(1);
-		prescription1.setId(Integer.parseInt(id));
-	    count = prescriptionService.test04(prescription1);
-		if (count > 0) {
-			System.out.println("处方状态修改成功");
-	   }  
-      return count;
+//       int count=0;
+//    	Prescription prescription1 = new Prescription();
+//		prescription1.setOutStatus(1);
+//		prescription1.setId(Integer.parseInt(id));
+//	    count = prescriptionService.test04(prescription1);
+//		if (count > 0) {
+//			System.out.println("处方状态修改成功");
+//	   }  
+//      return count;
+		return 0;
      }
 	//分解处方
 	@ResponseBody
