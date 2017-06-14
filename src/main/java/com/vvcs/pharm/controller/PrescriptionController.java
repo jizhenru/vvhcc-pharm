@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -113,6 +119,7 @@ public class PrescriptionController {
 	
 	@RequestMapping("druggist/updatePrescription.do")
 	public int updatePrescription(HttpServletRequest request) {
+		Integer flag = 1;
 		/*********处方分解**********/
 		//生成药房ID
 		Integer pharmacyId = 2;
@@ -156,7 +163,7 @@ public class PrescriptionController {
 			       if(drugboxs.size()!=0){
 			    	  Drugbox drugbox = drugboxs.get(0);
 			    	  if(drugbox.getDrugnum()-genericNum.getNum()>=0){
-							drugbox.setDrugnum(drugbox.getDrugnum()-genericNum.getNum());
+							drugbox.setDrugnum(genericNum.getNum());
 							drudboxlist.add(drugbox);
 							break;
 			       }
@@ -168,12 +175,12 @@ public class PrescriptionController {
 			if(drudboxlist.size()!=GenericNums.size()){
 				int count=0;
 				if(count==0){
-			   JOptionPane.showMessageDialog(null, "该药筒已无药.", "提示",JOptionPane.PLAIN_MESSAGE);   
+			   JOptionPane.showMessageDialog(null, "设备药品不足.", "提示",JOptionPane.PLAIN_MESSAGE);   
 	       	}
 				return count;
             }
 			/*********处方分解**********/
-			//处理药筒与设备直接的关系
+			//处理药筒与设备之间的关系
 			List<List<Drugbox>> drulist = new ArrayList<List<Drugbox>>();
 			Set<Integer> DeviceSet = new HashSet<Integer>();
 			for (Drugbox drugbox : drudboxlist) {//获取设备
@@ -189,46 +196,73 @@ public class PrescriptionController {
 				drulist.add(listdrugboxbydevice);
 			}
 			System.out.println(drulist);
+			JSONObject jsontotal = new JSONObject();
+			jsontotal.put("Action", 1);
+			jsontotal.put("DeriveNumber", drulist.size());
+			for (List<Drugbox> listDrugbox : drulist) {
+				int[] ColumnNumber=new int[listDrugbox.size()];
+				int[] RowNumber=new int[listDrugbox.size()];
+				int[] ZNumber=new int[listDrugbox.size()];
+				int[] GenericNum=new int[listDrugbox.size()];
+				for (int i = 0; i < listDrugbox.size(); i++) {
+					Drugbox drugbox = listDrugbox.get(i);
+					ColumnNumber[i]=Integer.parseInt(drugbox.getCoordinateX());
+					RowNumber[i]=Integer.parseInt(drugbox.getCoordinateY());
+					if(drugbox.getCoordinateZ()!=null){
+						ZNumber[i]=Integer.parseInt(drugbox.getCoordinateZ());
+					}else{
+						ZNumber[i]=-1;
+					}
+					GenericNum[i]=drugbox.getDrugnum();
+				}
+				Drugbox drugbox = listDrugbox.get(0);
+				Device device = derivceService.findedeviceidID(drugbox.getDeviceId());
+				JSONObject json = new JSONObject();
+				json.put("DrugsNumber", listDrugbox.size());
+				json.put("PrescriptionID", prescription.getId());
+				json.put("Action", 1);//处方编号
+				json.put("DeciceName", device.getName());
+				json.put("ColumnNumber", ColumnNumber);
+				json.put("RowNumber", RowNumber);
+				json.put("ZNumber", ZNumber);
+				json.put("GenericNum", GenericNum);
+				jsontotal.put(device.getName(), json);
+			}
 			/*********处方分解**********/
-			int[] ColumnNumber=new int[drudboxlist.size()];
-			int[] RowNumber=new int[drudboxlist.size()];
-			for (int i = 0; i < drudboxlist.size(); i++) {
-				Drugbox drugbox = drudboxlist.get(i);
-				ColumnNumber[i]=Integer.parseInt(drugbox.getCoordinateX());
-				RowNumber[i]=Integer.parseInt(drugbox.getCoordinateY());
-       }
-     	int total = drudboxlist.size();
-		JSONObject json = new JSONObject();
-			json.put("DeciceName", desc);
-			json.put("DrugsNumber", total);
-			json.put("Action", 1);
-			json.put("ColumnNumber", ColumnNumber);
-			json.put("RowNumber", RowNumber);
-			String MQ_drugbox = json.toString();
-			System.out.println(MQ_drugbox);  
-  		Interface_mq interfacemq = new Interface_mq();
-			String sendMessage = interfacemq.SendMessage("rpc_queue", MQ_drugbox);
-			System.out.println(sendMessage);
-           //更新药桶药品数量
-//			for (Drugbox drugbox : drudboxlist) {
-//				Integer i = drugboxService.updateDrugboxById1(drugbox);
-//				System.out.println(i);  
-//          	} 
+			String MQ_drugbox = jsontotal.toString();
+			System.out.println(MQ_drugbox); 
+			//超时处理
+			ExecutorService exec = Executors.newFixedThreadPool(1);
+			Callable<String> call = new Callable<String>() {  
+			    public String call(){  
+			        //开始执行耗时操作  
+			    	Interface_mq interfacemq = new Interface_mq();
+					String sendMessage = interfacemq.SendMessage("rpc_queue", MQ_drugbox);
+			        return sendMessage;
+			    }  
+			};
+			try {  
+			    Future<String> future = exec.submit(call);  
+			    String obj = future.get(1000 * 3, TimeUnit.MILLISECONDS); //任务处理超时时间设为 3 秒  
+			    System.out.println("任务成功返回:" + obj);  
+			} catch (TimeoutException ex) {
+			    System.out.println("处理超时啦....");
+			    flag=0;
+			    //ex.printStackTrace();  
+			} catch (Exception e) {
+			    System.out.println("处理失败.");  
+			    e.printStackTrace();  
+			}  
+		// 关闭线程池  
+		exec.shutdown();
+//			System.out.println(sendMessage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	
 	 /************************药桶更新完成******************************/
-//       int count=0;
-//    	Prescription prescription1 = new Prescription();
-//		prescription1.setOutStatus(1);
-//		prescription1.setId(Integer.parseInt(id));
-//	    count = prescriptionService.test04(prescription1);
-//		if (count > 0) {
-//			System.out.println("处方状态修改成功");
-//	   }  
 //      return count;
-		return 0;
+		return flag;
      }
 	//分解处方
 	@ResponseBody
