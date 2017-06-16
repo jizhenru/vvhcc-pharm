@@ -127,18 +127,7 @@ public class PrescriptionController {
 		//根据药房id查询药房内设备
 		List<Device> devices = derivceService.findDeviceByPharmacyId(pharmacyId);
 		/*********处方分解**********/
-		//根据设备查找药房药筒 
-//		List<Drugbox> drudboxlistall = new ArrayList<Drugbox>();
-//		if(devices!=null){
-//			for (Device device : devices) {
-//				List<Drugbox> drudboxs = drugboxService.findDrugboxByDriveId(device.getId());
-//				for (Drugbox drugbox : drudboxs) {
-//					drudboxlistall.add(drugbox);
-//				}
-//			}
-//		}
 		String id = request.getParameter("id");
-		/*******************更新药桶药品数量************************/
 		List<Drugbox> drudboxlist = new ArrayList<Drugbox>();
 		try {
 	   String desc="";
@@ -235,7 +224,7 @@ public class PrescriptionController {
 			ExecutorService exec = Executors.newFixedThreadPool(1);
 			Callable<String> call = new Callable<String>() {  
 			    public String call(){  
-			        //开始执行耗时操作  
+			        //开始执行耗时操作 
 			    	Interface_mq interfacemq = new Interface_mq();
 					String sendMessage = interfacemq.SendMessage("rpc_queue", MQ_drugbox);
 			        return sendMessage;
@@ -259,11 +248,24 @@ public class PrescriptionController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	
-	 /************************药桶更新完成******************************/
 //      return count;
 		return flag;
      }
+	
+	/**
+		* 说明： 更新处方状态和药桶药品数量 
+		* 
+		* @param 
+		* @return
+		* @author 研发部：纪振儒
+		* @time  2017年6月16日
+		*/
+	public Integer updatePrescriptionAndDrugbox(Integer PrescriptionId){
+		
+		return null;
+	}
+	
+	
 	//分解处方
 	@ResponseBody
 	@RequestMapping("druggist/fenjiechufang.do")
