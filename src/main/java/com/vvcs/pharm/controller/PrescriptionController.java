@@ -38,6 +38,7 @@ import com.vvcs.pharm.pojo.GenericNum;
 import com.vvcs.pharm.pojo.Pharmacy;
 import com.vvcs.pharm.pojo.Prescription;
 import com.vvcs.pharm.pojo.PrescriptionDetails;
+import com.vvcs.pharm.pojo.PrescriptionGeneric;
 import com.vvcs.pharm.service.PrescriptionService;
 import com.vvcs.pharm.service.AccountService;
 import com.vvcs.pharm.service.DeviceService;
@@ -45,6 +46,7 @@ import com.vvcs.pharm.service.DrugboxService;
 import com.vvcs.pharm.service.GenericService;
 import com.vvcs.pharm.service.PharmacyService;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -63,6 +65,9 @@ public class PrescriptionController {
     private AccountService accountService;
     @Autowired
     private DeviceService derivceService;
+    
+    
+    public static List<List<Drugbox>> drulist = new ArrayList<List<Drugbox>>();;
 	/**
 	 * 说明： 处方列表   查询所有未出药的处方列表
 	 *                              
@@ -116,7 +121,6 @@ public class PrescriptionController {
 	 * @time 2017年3月27日
 	 */
 	@ResponseBody
-	
 	@RequestMapping("druggist/updatePrescription.do")
 	public int updatePrescription(HttpServletRequest request) {
 		Integer flag = 1;
@@ -130,7 +134,6 @@ public class PrescriptionController {
 		String id = request.getParameter("id");
 		List<Drugbox> drudboxlist = new ArrayList<Drugbox>();
 		try {
-	   String desc="";
          //获取处方中的药品信息
        int intId = Integer.parseInt(id);
 	    Prescription prescription = prescriptionService.findPrescriptionId(intId);
@@ -148,7 +151,6 @@ public class PrescriptionController {
 		    for (GenericNum genericNum : GenericNums) {
 				 for(Device dev:devices){
 			List<Drugbox> drugboxs = drugboxService.findDrugboxByDriveAndDrug(dev.getDeviceid(),genericNum.getGeneric());
-			       //desc=desc+"\t"+dev.getName();    //设备名
 			       if(drugboxs.size()!=0){
 			    	  Drugbox drugbox = drugboxs.get(0);
 			    	  if(drugbox.getDrugnum()-genericNum.getNum()>=0){
@@ -170,7 +172,6 @@ public class PrescriptionController {
             }
 			/*********处方分解**********/
 			//处理药筒与设备之间的关系
-			List<List<Drugbox>> drulist = new ArrayList<List<Drugbox>>();
 			Set<Integer> DeviceSet = new HashSet<Integer>();
 			for (Drugbox drugbox : drudboxlist) {//获取设备
 				DeviceSet.add(drugbox.getDeviceId());
@@ -233,7 +234,7 @@ public class PrescriptionController {
 			try {  
 			    Future<String> future = exec.submit(call);  
 			    String obj = future.get(1000 * 3, TimeUnit.MILLISECONDS); //任务处理超时时间设为 3 秒  
-			    System.out.println("任务成功返回:" + obj);  
+			    System.out.println("任务成功返回:" + obj);
 			} catch (TimeoutException ex) {
 			    System.out.println("处理超时啦....");
 			    flag=0;
@@ -260,8 +261,47 @@ public class PrescriptionController {
 		* @author 研发部：纪振儒
 		* @time  2017年6月16日
 		*/
+	@ResponseBody
+	@RequestMapping("druggist/updatedrugbox")
 	public Integer updatePrescriptionAndDrugbox(Integer PrescriptionId){
-		
+		JSONObject json = new JSONObject();
+		json.put("PrescriptionId", PrescriptionId);
+		String MQ_drugbox = json.toString();
+		//超时处理
+		ExecutorService exec = Executors.newFixedThreadPool(1);
+		Callable<String> call = new Callable<String>() {  
+		    public String call(){ 
+		        //开始执行耗时操作 
+		    	Interface_mq interfacemq = new Interface_mq();
+				String sendMessage = interfacemq.SendMessage("req_queue", MQ_drugbox);
+		        return sendMessage;
+		    }
+		};
+		try {  
+		    Future<String> future = exec.submit(call);  
+		    String jsondata = future.get(1000, TimeUnit.MILLISECONDS); //任务处理超时时间设为 3 秒  
+		    JSONArray jsonArray = JSONArray.fromObject(jsondata);
+		    List<PrescriptionGeneric> list = (List<PrescriptionGeneric>) JSONArray.toCollection(jsonArray, PrescriptionGeneric.class);
+		    /***********更新药桶信息*********/
+			for (List<Drugbox> drugboxs : drulist) {
+				for (Drugbox drugbox : drugboxs) {
+					 for (PrescriptionGeneric pg : list) {
+						
+					}
+					System.out.println(drugbox);
+				}
+			}
+			/***********更新药桶信息*********/
+		} catch (TimeoutException ex) {
+		    System.out.println("处理超时啦....");
+		    //flag=0;
+		    //ex.printStackTrace();  
+		} catch (Exception e) {
+		    System.out.println("处理失败.");  
+		    e.printStackTrace();  
+		}  
+		// 关闭线程池  
+		exec.shutdown();
 		return null;
 	}
 	
