@@ -217,5 +217,23 @@ public int delvvcsdrugbox(Integer id){
 //public List<Drugbox> findDrugboxByDriveId(Integer id) {
 //	return drugboxMapper.findDrugboxByDriveId(id);
 //}
+/**
+	* 说明： 根据设备id和药桶坐标查询药桶
+	* 
+	* @param 
+	* @return
+	* @author 研发部：纪振儒
+	* @time  2017年6月20日
+	*/
+public Drugbox findDrugboxByDriveIdAndSpot(Integer deviceId, String drugboxX, String durgboxY, String drugboxZ) {
+	DataSourceContextHandler.setDataSourceContext("DB3");
+	Drugbox record = new Drugbox();
+	record.setDeviceId(deviceId);
+	record.setCoordinateX(drugboxX);
+	record.setCoordinateY(durgboxY);
+	record.setCoordinateZ(drugboxZ);
+	Drugbox drugbox = drugboxMapper.selectOne(record);
+	return drugbox;
+}
 
 }

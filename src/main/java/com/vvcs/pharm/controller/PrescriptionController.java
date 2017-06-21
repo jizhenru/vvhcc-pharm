@@ -216,6 +216,7 @@ public class PrescriptionController {
 				json.put("RowNumber", RowNumber);
 				json.put("ZNumber", ZNumber);
 				json.put("GenericNum", GenericNum);
+				json.put("deviceId", device.getId());
 				jsontotal.put(device.getName(), json);
 			}
 			/*********处方分解**********/
@@ -263,46 +264,72 @@ public class PrescriptionController {
 		*/
 	@ResponseBody
 	@RequestMapping("druggist/updatedrugbox")
-	public Integer updatePrescriptionAndDrugbox(Integer PrescriptionId){
+	public List<PrescriptionGeneric> updatePrescriptionAndDrugbox(Integer PrescriptionId){
 		JSONObject json = new JSONObject();
-		json.put("PrescriptionId", PrescriptionId);
+		json.put("PrescriptionId",1);
 		String MQ_drugbox = json.toString();
+		List<PrescriptionGeneric> pglist = new ArrayList<PrescriptionGeneric>();
 		//超时处理
 		ExecutorService exec = Executors.newFixedThreadPool(1);
 		Callable<String> call = new Callable<String>() {  
 		    public String call(){ 
 		        //开始执行耗时操作 
 		    	Interface_mq interfacemq = new Interface_mq();
-				String sendMessage = interfacemq.SendMessage("req_queue", MQ_drugbox);
+				String sendMessage = interfacemq.SendMessage("rpc_queue2", MQ_drugbox);
 		        return sendMessage;
 		    }
 		};
 		try {  
 		    Future<String> future = exec.submit(call);  
-		    String jsondata = future.get(1000, TimeUnit.MILLISECONDS); //任务处理超时时间设为 3 秒  
+		    String jsondata = future.get(1000 * 200, TimeUnit.MILLISECONDS); //任务处理超时时间设为 2 秒  
 		    JSONArray jsonArray = JSONArray.fromObject(jsondata);
 		    List<PrescriptionGeneric> list = (List<PrescriptionGeneric>) JSONArray.toCollection(jsonArray, PrescriptionGeneric.class);
 		    /***********更新药桶信息*********/
 			for (List<Drugbox> drugboxs : drulist) {
 				for (Drugbox drugbox : drugboxs) {
-					 for (PrescriptionGeneric pg : list) {
-						
-					}
+					PrescriptionGeneric pg = new PrescriptionGeneric();
+					pg.setDrugboxX(drugbox.getCoordinateX());
+					pg.setDurgboxY(drugbox.getCoordinateY());
+					pg.setDrugboxZ(drugbox.getCoordinateZ());
+					pg.setDeviceId(drugbox.getDeviceId());
+					pg.setGenericNum(drugbox.getDrugnum());
+					pg.setGenericName(drugbox.getDrug());
+					Integer deviceId = drugbox.getDeviceId();
+					Device device = derivceService.findedeviceidID(deviceId);
+					pg.setPharmacy("");
+					pg.setDeriveName(device.getName());
+					pglist.add(pg);
 					System.out.println(drugbox);
+					System.out.println(pg);
 				}
 			}
+			
+			for (PrescriptionGeneric pg1 : pglist) {
+				for (PrescriptionGeneric pg2 : list) {
+					if(pg1.getDeviceId()==pg2.getDeviceId() && pg1.getDrugboxX().equals(pg2.getDrugboxX()) && pg1.getDurgboxY().equals(pg2.getDurgboxY()) && pg1.getDrugboxZ().equals(pg2.getDrugboxZ())){
+						pg1.setStatus(pg2.getStatus());
+						if(pg2.getStatus()==1){//更新药桶
+							Drugbox drugbox = drugboxService.findDrugboxByDriveIdAndSpot(pg1.getDeviceId(),pg1.getDrugboxX(),pg1.getDurgboxY(),pg1.getDrugboxZ());
+							drugbox.setDrugnum(drugbox.getDrugnum()-pg2.getGenericNum());
+							drugboxService.updateDrugboxById1(drugbox);//更新
+						}
+					}
+				}
+			} 
+			System.out.println(pglist);
 			/***********更新药桶信息*********/
 		} catch (TimeoutException ex) {
 		    System.out.println("处理超时啦....");
 		    //flag=0;
 		    //ex.printStackTrace();  
+		    return null;
 		} catch (Exception e) {
 		    System.out.println("处理失败.");  
 		    e.printStackTrace();  
 		}  
 		// 关闭线程池  
 		exec.shutdown();
-		return null;
+		return pglist;
 	}
 	
 	

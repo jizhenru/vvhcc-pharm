@@ -7,11 +7,11 @@ public class PrescriptionGeneric implements Serializable{
 	private String deriveName;
 	private String genericName;
 	private Integer genericNum;
-	private Integer drugboxX;
-	private Integer durgboxY;
-	private Integer drugboxZ;
+	private Integer deviceId;
+	private String drugboxX;
+	private String durgboxY;
+	private String drugboxZ;
 	private Integer status;
-	
 	public String getPharmacy() {
 		return pharmacy;
 	}
@@ -36,22 +36,28 @@ public class PrescriptionGeneric implements Serializable{
 	public void setGenericNum(Integer genericNum) {
 		this.genericNum = genericNum;
 	}
-	public Integer getDrugboxX() {
+	public Integer getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
+	public String getDrugboxX() {
 		return drugboxX;
 	}
-	public void setDrugboxX(Integer drugboxX) {
+	public void setDrugboxX(String drugboxX) {
 		this.drugboxX = drugboxX;
 	}
-	public Integer getDurgboxY() {
+	public String getDurgboxY() {
 		return durgboxY;
 	}
-	public void setDurgboxY(Integer durgboxY) {
+	public void setDurgboxY(String durgboxY) {
 		this.durgboxY = durgboxY;
 	}
-	public Integer getDrugboxZ() {
+	public String getDrugboxZ() {
 		return drugboxZ;
 	}
-	public void setDrugboxZ(Integer drugboxZ) {
+	public void setDrugboxZ(String drugboxZ) {
 		this.drugboxZ = drugboxZ;
 	}
 	public Integer getStatus() {
@@ -63,7 +69,8 @@ public class PrescriptionGeneric implements Serializable{
 	@Override
 	public String toString() {
 		return "PrescriptionGeneric [pharmacy=" + pharmacy + ", deriveName=" + deriveName + ", genericName="
-				+ genericName + ", genericNum=" + genericNum + ", drugboxX=" + drugboxX + ", durgboxY=" + durgboxY
-				+ ", drugboxZ=" + drugboxZ + ", status=" + status + "]";
+				+ genericName + ", genericNum=" + genericNum + ", deviceId=" + deviceId + ", drugboxX=" + drugboxX
+				+ ", durgboxY=" + durgboxY + ", drugboxZ=" + drugboxZ + ", status=" + status + "]";
 	}
+	
 }
